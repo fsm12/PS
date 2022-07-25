@@ -1,66 +1,83 @@
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
 public class Main{
-	static int N, K, max=0;
-	static boolean vis[] = new boolean[26];
-	static String[] words;
-	
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static int N, K;
+    static boolean[] visited;
+    static String[] words;
+    static int max = 0;
+    static int selectedCount = 5;
+    public static void main(String[] args) throws IOException {
+//        System.setIn(new FileInputStream("src/input.txt"));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-		
-		N = Integer.parseInt(st.nextToken());
-		K = Integer.parseInt(st.nextToken());
-		words = new String[N];
-		
-		if(K<5) { // acint는 기본
-			System.out.println(0);
-            return;
-		}else if(K==26) { // 전체단어 사용
-			System.out.println(N);
-            return;
-		}else {
-			for(int n=0; n<N; n++) {
-                String str = br.readLine();
-                words[n] = str.substring(4, str.length()-4);
+        N = Integer.parseInt(st.nextToken());
+        K = Integer.parseInt(st.nextToken());
+
+        words = new String[N];
+        visited = new boolean[26];
+
+        if(K < 5) {
+            System.out.println(0);
+        } else {
+            visited['a' - 'a'] = true;
+            visited['n' - 'a'] = true;
+            visited['t' - 'a'] = true;
+            visited['i' - 'a'] = true;
+            visited['c' - 'a'] = true;
+            for (int i=0; i<N; i++) {
+                words[i] = br.readLine().replaceAll("[antic]", "");
             }
-            K-=5;
-            vis['a'-97]=true;
-            vis['n'-97]=true;
-            vis['t'-97]=true;
-            vis['i'-97]=true;
-            vis['c'-97]=true;
-            dfs(0, 0);
+            
+            max = countWords();
+            for (int i=0; i<26; i++) {
+                if(visited[i] == false) {
+                    dfs(i);
+                }
+            }
             System.out.println(max);
-		}
-	}
-	
-	private static void dfs(int start, int count) {
-        if(count == K) {
-            int rs = 0;
-            for(int i=0; i<N; i++) {
-                boolean isTrue = true;
-                for(int j=0; j<words[i].length(); j++) {
-                    if(!vis[words[i].charAt(j)-97]) {
-                        isTrue = false;
-                        break;
-                    }
-                }
-                if(isTrue) {
-                    rs++;
+        }
+    }
+
+    static void dfs(int index) {
+        //1.체크인 : 사용중
+        visited[index] = true;
+        selectedCount ++; 
+
+        //2.목적지인가 : K개만큼 배웠는가
+        if(selectedCount == K) {
+            // 몇개의 글자를 배울 수 있는지 계산해야함
+            max = Math.max(max, countWords());
+        } else {
+            //3.연결된 곳을 순회
+            for (int i=index+1; i<=25; i++) {
+                //4.갈 수 있는가 : 방문한 적 없는가
+                if(visited[i] == false) {
+                    //5.간다: dfs()
+                    dfs(i);
                 }
             }
-            max = Math.max(max, rs);
-            return;
         }
-        
-        for(int i=start; i<26; i++) {
-            if(!vis[i]) {
-                vis[i]=true;
-                dfs(i, count+1);
-                vis[i]=false;
+        //6.체크아웃
+        visited[index] = false;
+        selectedCount --;
+    }
+    
+    static int countWords() {
+        int count = 0;
+        for (int n=0; n<N; n++) {
+            boolean isPossible = true;
+            String word = words[n];
+            for (int i=0; i<word.length(); i++) {
+                if(visited[word.charAt(i) - 'a'] == false) {
+                    isPossible = false;
+                    break;
+                }
+            }
+            if(isPossible) {
+                count++;
             }
         }
+        return count;
     }
 }
