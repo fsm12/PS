@@ -1,7 +1,8 @@
 import sys
 from collections import deque
 
-def labeling_island():
+# 처음에 섬을 정수로 했다가 거리계산시 기준잡기가 난해해서 마이너스로 넘버링함 (섬이 3개면 각각 -1,-2,-3)
+def numbering():
     num = 0
     for i in range(n):
         for j in range(n):
@@ -26,7 +27,7 @@ def labeling_island():
                     if check:
                         island[num].append([r, c])
 
-def calc_distance(i, j, num):
+def distance(i, j, num):
     global dist
     queue = deque([])
     queue.append([i, j])
@@ -50,12 +51,12 @@ def calc_distance(i, j, num):
 n = int(input())
 board = [list(map(int, input().split())) for _ in range(n)]
 island = {}
-labeling_island()
+numbering()
 
 dist = sys.maxsize
 for num, array in island.items():
     board_ = [x[:] for x in board]
     for i, j in array:
-        calc_distance(i, j, num)
+        distance(i, j, num)
 
 print(dist)
