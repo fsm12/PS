@@ -2,83 +2,91 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	static int N, fee[];
-	static ArrayList<Pair> list[];
-	static char type[];
-	static boolean flag, visit[];
-	static class Pair {
-		int node;
+    static int N;
+    static Room[] rooms;
+    static LinkedList<Integer>[] adjList;
+    static boolean[] vis;
+    static boolean flag;
+    static int money;
 
-		public Pair(int node) {
-			this.node = node;
-		}
-	}
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
-		while (true) {
-			st = new StringTokenizer(in.readLine());
-			N = Integer.valueOf(st.nextToken());
-			type = new char[N+1];
-			flag = false;
-			visit = new boolean[N+1];
-			if(N==0)
-				break;
-			list = new ArrayList[N + 1];
-			fee = new int[N+1];
-			for (int i = 1; i <= N; i++) {
-				list[i] = new ArrayList<>();
-			}
-			for(int i=1; i<=N; i++) {
-				st = new StringTokenizer(in.readLine());
-				type[i] = st.nextToken().charAt(0);
-				fee[i] =  Integer.valueOf(st.nextToken());
-				while(true) {
-					int node = Integer.valueOf(st.nextToken());
-					if(node==0) break;
-					list[i].add(new Pair(node));				
-				}
-			}
+        while(true) {
+            N = Integer.parseInt(br.readLine());
+            if(N == 0) {
+                break;
+            }
             
-			if(type[1]!='T') {
-				visit[1] = true;
-				recur(fee[1], 1);
-			}
-			System.out.println(flag?"Yes":"No");
-		}
-	}
-	static void recur(int myMoney, int curNode) {
-		if(flag) return;
-		if(curNode == N) {
-			flag = true;
-			return;
-		}
-		for(Pair next : list[curNode]) {
-			if(visit[next.node]) {
-				continue;
-			}
-			
-			if(type[next.node]=='L') {
-				if(myMoney>=fee[next.node]) {
-					visit[next.node] = true;
-					recur(myMoney, next.node);
-				}else {
-					visit[next.node] = true;
-					recur(fee[next.node], next.node);
-				}
-			}else if(type[next.node]=='T') {
-				if(myMoney >= fee[next.node]) {
-					visit[next.node] = true;
-					recur(myMoney - fee[next.node], next.node);
-				}else {
-					return;
-				}
-			}else {
-				visit[next.node] = true;
-				recur(myMoney, next.node);
-			}
-			visit[next.node]=false;
-		}
-	}
+            adjList = new LinkedList[N+1];
+            rooms = new Room[N+1];
+            vis = new boolean[N+1];
+
+            money = 0;
+            flag = false;
+
+            for(int i=1; i<=N; i++) {
+                adjList[i] = new LinkedList<Integer>();
+            }
+
+            for(int n=1;n<=N; n++) {
+                StringTokenizer st = new StringTokenizer(br.readLine());
+
+                char npc = st.nextToken().charAt(0);
+                int cost = Integer.parseInt(st.nextToken());
+
+                rooms[n] = new Room(npc, cost);
+                while(true) {
+                    int num =  Integer.parseInt(st.nextToken());
+                    if(num == 0) {
+                        break;
+                    }
+                    if(num == n) {
+                        continue;
+                    }
+                    adjList[n].add(num);
+                }
+            }
+            dfs(1);
+            System.out.println(flag?"Yes":"No");
+        }
+    }
+
+    static void dfs(int roomIdx) {
+        if(rooms[roomIdx].npc == 'T') {
+            if(rooms[roomIdx].cost <= money) {
+                money -= rooms[roomIdx].cost;
+            }else {
+                return;
+            }
+        }
+        if(roomIdx == N) {
+            flag = true;
+            return;
+        }
+
+        if(rooms[roomIdx].npc == 'L') {
+            if(rooms[roomIdx].cost > money) {
+                money = rooms[roomIdx].cost;
+            }
+        }
+
+        vis[roomIdx] = true;
+        for(int n : adjList[roomIdx]) {
+            if(!vis[n]) {
+                dfs(n);
+            }
+        }
+        vis[roomIdx] = false;
+
+    }
+    static class Room{
+        char npc;
+        int cost;
+
+        public Room(char npc, int cost) {
+            this.npc = npc;
+            this.cost = cost;
+        }
+    }
 }
