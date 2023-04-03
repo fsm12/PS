@@ -19,11 +19,16 @@ import java.io.*;
  * 구현이..
  * 
  * sol) 
- * 문제에서 요구하는 그대로 구현해도 될듯
+ * 문제에서 요구하는 그대로 집합으로 구현해도 될듯
+ * 맞았습니다가 나왔지만 307504KB 메모리에 1220ms..
+ * 줄이자
+ * 
+ * sol)
+ * 꼭 전체를 보지않아도 되므로 이분탐색 이용 (+집합)
  */
 
 public class Main{
-	static int R,C,cnt;
+	static int R,C,s,e,cnt;
 	static char[][] map;
 	static Set<String> set;
 	static String[] arr;
@@ -41,28 +46,39 @@ public class Main{
 			map[r] = br.readLine().toCharArray();
 		}
 
-		// arr에 미리  열을 위에서 아래로 읽어서 만든 문자열을 담음
+		// arr에 미리 열을 위에서 아래로 읽어서 만든 문자열을 담음
 		arr = new String[C];
 		for (int c=0; c<C; c++) {
 			StringBuilder sb = new StringBuilder();
-			for (int r=1; r<R; r++) {
+			for (int r=R-1; r>=0; r--) {
 				sb.append(map[r][c]);
 			}
-			arr[c] = sb+"";
+			arr[c] = sb.toString();
 		}
 		
-		// 집합에 담아두고 겹치면 break
-		stop: for(int r=0; r<R; r++) {
-			set = new HashSet<>();
-			for (int c=0; c<C; c++) {
-				String now = arr[c].substring(r);
-				if (set.contains(now)) 
-					break stop;
-				else 
-					set.add(now);
+        // 이분탐색
+		s = 0;
+		e = R;
+		set = new HashSet<>();
+		while(s<=e) {
+			int mid = (s+e)/2;
+			boolean flag = false;
+			for(int c=0; c<C; c++) {
+				String str = arr[c].substring(0, mid);
+				if(!set.contains(str)) {
+					set.add(str);
+				}else {
+					flag = true;
+				}
 			}
-			cnt++;
+			
+			if(flag) {
+				s = mid+1;
+			}else {
+				cnt = mid;
+				e = mid-1;
+			}
 		}
-		System.out.println(cnt);
+		System.out.println(R-cnt);
 	}
 }
