@@ -1,16 +1,21 @@
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
-public class Main {
-    public static void main(String[] args) throws IOException {
-        StringBuffer sb = new StringBuffer();
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+public class Main{
+	static int N, back;
+	static Queue<Integer> q;
+	static StringBuilder sb;
+	
+	public static void main(String[] args) throws Exception {
+		// System.setIn(new FileInputStream("src/input.txt"));
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+	
+		N = Integer.parseInt(br.readLine());
+        q = new LinkedList<>();
 
-        int N = Integer.parseInt(br.readLine());
-        int back = 0;
-        Queue<Integer> q = new LinkedList<>();
-
-        for (int i = 0; i < N; i++) {
+        sb = new StringBuilder();
+        for (int n = 0; n < N; n++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
             switch (st.nextToken()) {
                 case "push": {
@@ -55,10 +60,8 @@ public class Main {
                     }
                     break;
                 }
-                default:
-                    break;
             }
         }
         System.out.println(sb);
-    }
+	}
 }
