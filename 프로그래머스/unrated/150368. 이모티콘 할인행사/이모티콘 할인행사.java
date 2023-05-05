@@ -9,18 +9,7 @@ n명의 카카오톡 사용자들에게 이모티콘 m개를 할인하여 판매
 */
 
 class Solution {
-    static double[] sales = {0.1, 0.2, 0.3, 0.4};
-    
-    static class Imoticon{
-        double price;
-        double percent;
-        
-        public Imoticon(double price, double percent){
-            this.price = price;
-            this.percent = percent;
-        }
-    }
-    
+    static final double[] SALE_PERCENT = {0.1, 0.2, 0.3, 0.4};
     static int maxJoin = Integer.MIN_VALUE, maxPrice = Integer.MIN_VALUE;
     
     public int[] solution(int[][] users, int[] emoticons) {
@@ -31,46 +20,54 @@ class Solution {
     
     public static void nPIr(int depth, List<Imoticon> imsi, int[][] users, int[] emoticons){
         if(depth == emoticons.length){
-            int total = 0;
-            int join = 0;
+            int finalImotiBuyPrice = 0;
+            int finalServiceJoin = 0;
             // 모든 고객에 대해
             for(int i=0; i<users.length; i++){
-                int userPercent = users[i][0];
-                int userPrice = users[i][1];
+                int userWantPercent = users[i][0];
+                int userImpossiPrice = users[i][1];
                 
-                int sum = 0;
+                int onlyImotiBuyPrice = 0;
                 // 이모티콘 구매여부 판단
                 for(int j=0; j<imsi.size(); j++){
                     Imoticon cur = imsi.get(j);
-                    double curPrice = cur.price;
-                    double curPercent = cur.percent;
                     // 사용자가 원하는 할인율 이상을 할인할 경우
-                    if(curPercent >= userPercent)
-                        sum += curPrice;
+                    if(cur.percent >= userWantPercent)
+                        onlyImotiBuyPrice += cur.price;
                 }
                 
                 // 각 사용자들은 이모티콘 구매 비용의 합이 일정 가격 이상이 된다면, 이모티콘 구매를 모두 취소 후 가입
-                if(sum >= userPrice)
-                    join++;
+                if(onlyImotiBuyPrice >= userImpossiPrice)
+                    finalServiceJoin++;
                 else{
-                    total += sum;
+                    finalImotiBuyPrice += onlyImotiBuyPrice;
                 }
 
                 // 갱신
-                if(maxJoin < join){
-                    maxPrice = total;
-                    maxJoin = join;
-                }else if(maxJoin == join && maxPrice < total){
-                    maxPrice = total;
+                if(maxJoin < finalServiceJoin){
+                    maxPrice = finalImotiBuyPrice;
+                    maxJoin = finalServiceJoin;
+                }else if(maxJoin == finalServiceJoin && maxPrice < finalImotiBuyPrice){
+                    maxPrice = finalImotiBuyPrice;
                 }
             }
             return;
         }
 
-        for(int i=0; i<sales.length; i++){
-            imsi.add(new Imoticon(((1-sales[i])*(emoticons[depth])), (100*sales[i])));
+        for(int i=0; i<4; i++){
+            imsi.add(new Imoticon(((1-SALE_PERCENT[i])*(emoticons[depth])), (100*SALE_PERCENT[i])));
             nPIr(depth+1, imsi, users, emoticons);
             imsi.remove(imsi.size()-1);
         }
+    }
+}
+
+class Imoticon{
+    double price;
+    double percent;
+
+    public Imoticon(double price, double percent){
+        this.price = price;
+        this.percent = percent;
     }
 }
