@@ -1,25 +1,9 @@
-import java.util.*;
-
 class Solution {
     public int solution(String s) {
-        HashMap<String, Integer> map = new HashMap<>();
-        map.put("zero",0);
-        map.put("one",1);
-        map.put("two",2);
-        map.put("three",3);
-        map.put("four",4);
-        map.put("five",5);
-        map.put("six",6);
-        map.put("seven",7);
-        map.put("eight",8);
-        map.put("nine",9);
-        
-        for (String key : map.keySet()){
-            System.out.println("key: "+key);
-            s = s.replace(key,String.valueOf(map.get(key)));
+        String[] nums = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
+        for(int i=0; i<10; i++){
+            s = s.replace(nums[i], String.valueOf(i));
         }
-        
-        int answer = Integer.parseInt(s);
-        return answer;
+        return Integer.parseInt(s);
     }
 }
