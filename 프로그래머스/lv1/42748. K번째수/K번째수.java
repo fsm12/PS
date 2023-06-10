@@ -1,22 +1,17 @@
-// (5-2+1)-3+1 = j-i-k+2 => pq.poll()할 횟수
-
 import java.util.*;
 
 class Solution {
     public int[] solution(int[] array, int[][] commands) {
         int[] answer = new int[commands.length];
         int point = 0;
-        for(int[] command : commands){
-            int i = command[0], j= command[1], k = command[2];
-            PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+        for(int[] com : commands){
+            int i = com[0], j= com[1], k = com[2];
+            int[] get_arr = new int[j-i+1];
             for(int idx=i-1; idx<j; idx++){
-                pq.add(array[idx]);
+                get_arr[idx-i+1] = array[idx];
             }
-            int ans = 0;
-            for(int idx = 0; idx<j-i-k+2; idx++){
-                ans = pq.poll();
-            }
-            answer[point++] = ans;
+            Arrays.sort(get_arr);
+            answer[point++] = get_arr[k-1];
         }
         return answer;
     }
