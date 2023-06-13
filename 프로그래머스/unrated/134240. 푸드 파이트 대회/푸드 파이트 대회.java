@@ -1,22 +1,15 @@
 class Solution {
     public String solution(int[] food) {
-        int size = 1;
-        for(int i=1; i<food.length; i++){
-            food[i] /= 2; 
-            size += food[i];
-        }
-        size *= 2;
-        
-        char[] answer = new char[size-1];
+        StringBuilder sb = new StringBuilder();
+        sb.append(0);
         int point = 0;
-        for(int idx=1; idx<food.length; idx++){
-            for(int i=0; i<food[idx]; i++){
-                answer[point] = Integer.toString(idx).charAt(0);
-                answer[size-point-2] = Integer.toString(idx).charAt(0);
+        for(int idx=food.length-1; idx>0; idx--){
+            for(int i=0; i<food[idx]/2; i++){
+                sb.insert(0, idx);
+                sb.append(idx);
                 point++;
             }
         }
-        answer[point] = '0';
-        return String.valueOf(answer);
+        return sb.toString();
     }
 }
