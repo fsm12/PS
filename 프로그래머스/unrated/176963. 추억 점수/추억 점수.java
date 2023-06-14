@@ -11,7 +11,7 @@ class Solution {
         int point = 0;
         for(String[] names : photo){
             for(String n : names){
-                answer[point] += map.containsKey(n) ? map.get(n) : 0;
+                answer[point] += map.get(n) == null ? 0 : map.get(n);
             }
             point++;
         }
