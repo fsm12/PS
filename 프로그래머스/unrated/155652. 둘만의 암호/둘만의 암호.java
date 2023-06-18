@@ -23,7 +23,6 @@ class Solution {
             answer += s;
         }
         
-        
         return answer;
     }
 }
