@@ -4,7 +4,7 @@ class Solution {
         int empty = n;
         
         while(empty >= a) {
-            int get = empty / a * b ;
+            int get = empty / a * b;
             
             empty = empty % a + get;
             ans += get;
