@@ -2,15 +2,16 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int k, int[] score) {
-        int score_len = score.length;
-        int[] answer = new int[score_len];
-        int ans_idx = 0;
-
+        int[] answer = new int[score.length];
+        
         PriorityQueue<Integer> pq = new PriorityQueue<>();
-        for(int i=0; i<score_len; i++){
-            pq.add(score[i]);
-            if(pq.size() > k){
+        int ans_idx = 0, pq_size = 0;
+        for(int sc : score){
+            pq.add(sc);
+            pq_size += 1;
+            if(pq_size > k){
                 pq.poll();
+                pq_size -= 1;
             }
             answer[ans_idx++] = pq.peek();
         }
