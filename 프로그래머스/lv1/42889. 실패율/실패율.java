@@ -17,7 +17,6 @@ class Solution {
             }else{
                 map.put(n, (double)cnt[n]/total);
             }
-            System.out.println(cnt[n]+" "+total);
             total -= cnt[n];
         }
         
