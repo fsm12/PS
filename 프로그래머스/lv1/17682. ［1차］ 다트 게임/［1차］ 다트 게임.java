@@ -1,38 +1,40 @@
+import java.util.regex.*;
+
 class Solution {
     public int solution(String dartResult) {
-        int[] score = new int[3];
+        Pattern pattern = Pattern.compile("([0-9]+)([SDT])([*#]?)");
+        Matcher matcher = pattern.matcher(dartResult);
         
+        int[] score = new int[3];
         int idx = 0;
-        for(char c : dartResult.toCharArray()){
-            if(Character.isDigit(c)){
-                score[idx] = score[idx]*10 + (c - '0');
-                // System.out.println(score[idx]);
-                continue;
-            }
+        while(matcher.find()){
+            score[idx] = Integer.parseInt(matcher.group(1));
             
-            if(c == '*'){
-                score[idx-1]*=2;
-                if(2<=idx){
-                    score[idx-2]*=2;
-                }
-                continue;
-            }
-            
-            if(c == '#'){
-                score[idx-1]*=-1;
-                continue;
-            }
-            
-            if(c == 'D'){
+            if(matcher.group(2).charAt(0) == 'D'){
                 score[idx] = (int) Math.pow(score[idx], 2);
             }
             
-            if(c == 'T'){
+            if(matcher.group(2).charAt(0) == 'T'){
                 score[idx] = (int) Math.pow(score[idx], 3);
             }
             
             idx++;
+            
+            if(!matcher.group(3).isEmpty()){
+                if(matcher.group(3).charAt(0) == '*'){
+                    score[idx-1]*=2;
+                    if(2<=idx){
+                        score[idx-2]*=2;
+                    }
+                }
+
+                if(matcher.group(3).charAt(0) == '#'){
+                    score[idx-1]*=-1;
+                }
+            }
         }
+        
+        
         int ans = 0;
         for(int i=0; i<3; i++){
             ans += score[i];
