@@ -2,33 +2,32 @@ import java.util.*;
 
 class Solution {
     public String solution(String X, String Y) {
-        Map<Character, Integer> map = new HashMap<>();
-        
-        for(char c : X.toCharArray()){
-            map.put(c, map.getOrDefault(c, 0)+1);
+        int[] numX = new int[10];
+        for(int i=0; i<X.length(); i++) {
+            numX[X.charAt(i)-'0']++;
         }
         
-        PriorityQueue<Character> pq = new PriorityQueue<>(Collections.reverseOrder());
-        int zero_cnt = 0;
-        for(char c : Y.toCharArray()){
-            Integer cnt = map.get(c);
-            if(cnt != null && 0 < cnt){
-                pq.add(c);
-                map.put(c, cnt-1);
-                if(c == '0')
-                    zero_cnt++;
+        int[] numY = new int[10];
+        for(int i=0; i<Y.length(); i++) {
+            numY[Y.charAt(i)-'0']++;
+        }
+        
+        StringBuilder answer = new StringBuilder();
+        for(int i=9; i>=0; i--) {
+            if(numY[i]>0 && numX[i]>0) {
+                answer.append(i);
+                numY[i]--;
+                numX[i]--;
+                i++;
             }
         }
         
-        if(pq.size()!=0 && zero_cnt == pq.size())
-            return "0";
-        
-        StringBuilder sb = new StringBuilder();
-        boolean flag = false;
-        while(!pq.isEmpty()){
-            flag = true;
-            sb.append(pq.poll());
-        }
-        return flag?sb.toString():"-1";
+        String ans = answer.toString();
+        if("".equals(ans))
+           return "-1";
+        else if(ans.charAt(0)=='0')
+           return "0";
+        else
+            return ans;
     }
 }
