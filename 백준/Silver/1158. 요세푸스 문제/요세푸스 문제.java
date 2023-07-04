@@ -1,34 +1,35 @@
 import java.io.*;
 import java.util.*;
 
-public class Main{
-	static int N,K;
-
-	public static void main(String[] args) throws Exception {
-		// System.setIn(new FileInputStream("input.txt"));
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-
-		StringTokenizer st = new StringTokenizer(br.readLine());
+public class Main {
+    static int N,K,p;
+    
+    public static void main(String[] args) throws IOException {
+        // System.setIn(new FileInputStream("input.txt"));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        
+        StringTokenizer st = new StringTokenizer(br.readLine());
 		N = Integer.parseInt(st.nextToken());
 		K = Integer.parseInt(st.nextToken());
 
-		Queue<Integer> q = new LinkedList<>();
-		for(int n=1; n<=N; n++){
-			q.add(n);
-		}
+        List<Integer> arr = new ArrayList<>();
+        for (int n=0; n<N; n++) {
+            arr.add(n);
+        }
 
-		StringBuilder sb = new StringBuilder();
-		sb.append("<");
-		while(!q.isEmpty()){
-			for(int k=0; k<K-1; k++) {
-				q.add(q.poll());
-			}
-			sb.append(q.poll()).append(", ");
-		}
-		sb.delete(sb.length()-2, sb.length());
-		sb.append(">");
-		
-		System.out.println(sb.toString());
-	}
+        p = K-1;
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("<");
+        for (int n=0; n<N-1; n++) {
+            if (p >= arr.size()) {
+                p %= arr.size();
+            }
+            sb.append(arr.remove(p) + 1).append(", ");
+            p += (K-1);
+        }
+        sb.append(arr.remove(0) + 1).append(">");
+        
+        System.out.println(sb);
+    }
 }
