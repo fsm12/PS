@@ -1,43 +1,67 @@
-import java.util.*;
-
 class Solution {
     public int[] solution(String[] park, String[] routes) {
-        int[] ans = new int[2];
+        int sx = 0, sy=0;
+        char[][] board = new char[park.length][park[0].length()];
         
-        Map<Character, int[]> xy = new HashMap<>();
-        xy.put('N', new int[]{-1,0});
-        xy.put('S', new int[]{1,0});
-        xy.put('W', new int[]{0,-1});
-        xy.put('E', new int[]{0,1});
         
-        int N = park.length, M = park[0].length();
-        for(int n=0; n<N; n++){
-            for(int m=0; m<M; m++){
-                if(park[n].charAt(m) == 'S'){
-                    ans = new int[]{n,m};
+        for (int i=0; i<park.length; i++){
+            for (int j=0; j<park[0].length(); j++){
+                board[i][j] = park[i].charAt(j);
+                if (park[i].charAt(j) == 'S'){
+                    sx = j; sy=i;
+                }
+            }
+        }
+        
+        String[] dir = new String[routes.length];
+        int[] space = new int[routes.length];
+        
+        for (int i=0; i<routes.length; i++){
+            dir[i] = routes[i].split(" ")[0];
+            space[i] = Integer.parseInt(routes[i].split(" ")[1]);
+        }
+        
+        char now = 0;
+        int nx = sx; int ny = sy;
+        
+        for (int i=0; i<routes.length; i++){
+            for (int j=1; j<=space[i]; j++){
+                
+                switch (dir[i]){
+                    case "E":
+                        if(sx+space[i]>=park[0].length()) 
+                            break;
+                        now = board[sy][sx+j];
+                        nx = sx+j; break;
+                    case "W":
+                        if(sx-space[i] < 0) break;
+                        now = board[sy][sx-j];
+                        nx = sx-j; break;
+                    case "S":
+                        if(sy+space[i]>=park.length) break;
+                        now = board[sy+j][sx];
+                        ny = sy+j; break;
+                    case "N":
+                        if(sy-space[i]<0) break;
+                        now = board[sy-j][sx];
+                        ny = sy-j; break;
+                }
+                if (now == 'X'){
+                    nx = sx;
+                    ny = sy; 
                     break;
                 }
+                System.out.println(nx+" "+ny+" "+sx+" "+sy);
             }
+        
+            if(now != 'X') {
+            	sx = nx;
+            	sy = ny;
+        	}  
         }
         
-        for(String route : routes){
-            int[] dxdy = xy.get(route.charAt(0));
-            int move = route.charAt(2) - '0';
-            
-            int nx = ans[0], ny = ans[1];
-            for(int n=0; n<move; n++){
-                nx+=dxdy[0];
-                ny+=dxdy[1];
-                if(0<=nx && nx<N && 0<=ny && ny<M && (park[nx].charAt(ny) == 'O' || park[nx].charAt(ny) == 'S')){
-                    continue;
-                }
-                nx = ans[0];
-                ny = ans[1];
-                break;
-            }
-            ans[0] = nx;
-            ans[1] = ny;
-        }
-        return ans;
+        int[] answer = new int[]{sy, sx};  
+        
+        return answer;
     }
 }
