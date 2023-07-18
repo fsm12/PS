@@ -1,17 +1,12 @@
+
 class Solution {
-    public int solution(int N, int M, int[] section) {
-        int ans = 0, secLen = section.length, i=0;
-        for(int n=1; n<=N; n++){
-            if(i<secLen){
-                if(n == section[i]){
-                    ans++;
-                    n+=M-1;
-                    while(i<secLen && section[i] <= n){
-                        i++;
-                    }
-                }
-            }else
-                break;
+    public int solution(int n, int m, int[] section) {
+        int ans = 0, max = 0;
+        for (int sec : section) {
+            if (max <= sec) {
+                max = sec + m;
+                ans++;
+            }
         }
         return ans;
     }
