@@ -1,7 +1,7 @@
 class Solution{
     public int solution(String s){
         int N = s.length(), p = 0;
-        int[] stack = new int[N];
+        char[] stack = new char[N];
         
         for(char c : s.toCharArray()){
             if(0<p && stack[p-1] == c){
