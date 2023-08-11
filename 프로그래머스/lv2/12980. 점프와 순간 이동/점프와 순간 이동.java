@@ -1,15 +1,13 @@
 import java.util.*;
 
 public class Solution {
-    public int solution(int N) {
+    public int solution(int n) {
         int ans = 0;
-        double n = N;
         while(n!=0){
+            if(n%2 == 1){
+                ans+=1;
+            }
             n/=2;
-            if((int)n == n)
-                continue;
-            ans+=1;
-            n = (int)n;
         }
         return ans;
     }
