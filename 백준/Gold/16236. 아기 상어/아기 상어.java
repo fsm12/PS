@@ -6,10 +6,10 @@ public class Main {
     static int[] cur, dx={-1,0,1,0}, dy={0,-1,0,1};
     static int[][] map;
     static boolean[][] vis;
+    static boolean ck;
 
     public static void main(String[] args) throws IOException {
-        //System.setIn(new FileInputStream("src/input.txt"));
-
+        //System.setIn(new FileInputStream(input.txt"));
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
 
@@ -34,7 +34,7 @@ public class Main {
             que.add(new int[]{cur[0], cur[1], 0});
             vis[cur[0]][cur[1]] = true;
 
-            boolean ck = false;
+            ck = false;
 
             while (!que.isEmpty()) {
                 cur = que.poll();
