@@ -3,7 +3,7 @@ import java.io.*;
 
 public class Main{
 	static int N;
-	static Str[] arr;
+	static String[] arr;
 	
 	public static void main(String[] args) throws Exception {
 		// System.setIn(new FileInputStream("input.txt"));
@@ -11,36 +11,26 @@ public class Main{
 
 		N = Integer.parseInt(br.readLine());
 		
-		arr = new Str[N];
+		arr = new String[N];
 		for(int n=0; n<N; n++) {
-			arr[n] = new Str(br.readLine());
+			arr[n] = br.readLine();
 		}
-		Arrays.sort(arr);
+		
+		Arrays.sort(arr, (s1, s2) -> {
+            if (s1.length() == s2.length()) {
+                return s1.compareTo(s2);
+            }
+            return s1.length() - s2.length();
+        });
 		
 		StringBuilder sb = new StringBuilder();
 		String prev = "";
 		for(int n=0; n<N; n++) {
-			if(prev.equals(arr[n].str))
+			if(prev.equals(arr[n]))
 				continue;
-			sb.append(arr[n].str).append("\n");
-			prev = arr[n].str;
+			sb.append(arr[n]).append("\n");
+			prev = arr[n];
 		}
 		System.out.println(sb.toString());
-		
 	}
-}
-
-class Str implements Comparable<Str>{
-	String str;
-	
-	public Str(String s) {
-		this.str = s;
-	}
-	
-    public int compareTo(Str o) {
-    	if(this.str.length() == o.str.length()) {
-    		return this.str.compareTo(o.str);
-    	}
-        return this.str.length() - o.str.length(); 
-    }
 }
