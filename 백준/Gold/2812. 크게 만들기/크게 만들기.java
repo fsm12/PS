@@ -15,7 +15,7 @@ public class Main{
 		K = Integer.parseInt(st.nextToken());
  
 		num = br.readLine();
-		stack = new char[N+1];
+		stack = new char[N];
 		for (int i = 0; i < N; i++) {
             while (del < K && p!=0 && Integer.valueOf(stack[p-1]) < Integer.valueOf(num.charAt(i))) {
                 p-=1;
