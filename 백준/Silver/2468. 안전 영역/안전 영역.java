@@ -1,7 +1,6 @@
 import java.io.*;
 import java.util.*;
 
-
 public class Main {
 	static int N,min=100,max=0,ans=1;
 	static int[][] map;
@@ -24,7 +23,6 @@ public class Main {
 			}
 		}
 		
-		
 		for(int h=min; h<max; h++) {
 			int curAns = 0;
 			vis = new boolean[N][N];
@@ -42,13 +40,10 @@ public class Main {
 	public static int dfs(int x, int y, int height) {
 		vis[x][y] = true;
 		for(int i=0; i<4; i++) {
-			int nx = x +dx[i];
-			int ny = y +dy[i];
+			int nx = x+dx[i];
+			int ny = y+dy[i];
 			
-			if(nx<0 || ny<0 || nx>N-1 || ny >N-1) 
-				continue;
-			if(vis[nx][ny]) continue;
-			if(map[nx][ny]> height) {
+			if(0<=nx && nx<N && 0<=ny && ny<N && !vis[nx][ny] && height < map[nx][ny]) {
 				dfs(nx,ny, height);
 			}
 		}
