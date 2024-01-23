@@ -1,16 +1,12 @@
 import java.io.*;
 import java.util.*;
 
-/*
-비트마스킹 + BFS
-*/
-
 public class Main {
 	static int[] dx = {-1,1,0,0}, dy = {0,0,-1,1};
 	static int N,M,ans=Integer.MAX_VALUE;
 	static char[][] map;
 	static boolean[][][] vis;
-	static Queue<Node> q;
+	static Queue<int[]> q; // x,y,move,keys
 	
     public static void main(String[] args) throws IOException {
     	// System.setIn(new FileInputStream("src/input.txt"));
@@ -27,29 +23,30 @@ public class Main {
         	for(int m=0; m<M; m++) {
         		map[n][m] = inp.charAt(m);
         		if(map[n][m] == '0') {
-        			q.add(new Node(n,m,0,0));
+        			q.add(new int[] {n,m,0,0});
         		}
         	}
         }
-        vis = new boolean[N][M][64];
         System.out.println(bfs());
     }
     
     public static int bfs() {
+
+        vis = new boolean[N][M][64];
         while(!q.isEmpty()) {
-        	Node cur = q.poll();
-        	int curKey = cur.keys;
-        	int curMove = cur.move;
+        	int[] cur = q.poll();
+        	int curMove = cur[2];
+        	int curKey = cur[3];
         	
         	// 2. 목적지 - '1'을 만날 때
-        	if(map[cur.x][cur.y]=='1') {
+        	if(map[cur[0]][cur[1]]=='1') {
         		return curMove;
         	}
         	
         	// 3. 연결되어 있는가 - 4방
         	for(int i=0; i<4; i++) {
-        		int nx = cur.x + dx[i];
-        		int ny = cur.y + dy[i];
+        		int nx = cur[0] + dx[i];
+        		int ny = cur[1] + dy[i];
         		
         		// 4. 갈 수 있는가
         		// 4-1. 맵안
@@ -64,7 +61,7 @@ public class Main {
         				// 나는 맞는 열쇠를 가지고 있는 경우
         				if(0 < ((1 << (map[nx][ny]-'A')) & curKey)) {
             				vis[nx][ny][curKey] = true;
-            				q.add(new Node(nx,ny,cur.move+1,curKey));
+            				q.add(new int[] {nx,ny,curMove+1,curKey});
             			}
         				continue;
         			}
@@ -75,28 +72,17 @@ public class Main {
         				if(!vis[nx][ny][addKey]) {
             				vis[nx][ny][addKey] = true;
             				vis[nx][ny][curKey] = true;
-            				q.add(new Node(nx,ny,cur.move+1,addKey));
+            				q.add(new int[] {nx,ny,curMove+1,addKey});
             				continue;
         				}
         			}
         			
         			// 4-5. 나머지는 갈 수 있는 노드로 추가
     				vis[nx][ny][curKey] = true;
-    				q.add(new Node(nx,ny,cur.move+1,curKey));
+    				q.add(new int[] {nx,ny,curMove+1,curKey});
         		}
         	}
         }
         return -1;
     }
-}
-
-class Node{
-	int x,y,move,keys;
-	
-	public Node(int x, int y, int move, int keys) {
-		this.x = x;
-		this.y = y;
-		this.move = move;
-		this.keys = keys;
-	}
 }
