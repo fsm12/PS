@@ -1,84 +1,84 @@
 import java.util.*;
 
 class Solution {
-    static int maxNum, minNum;
-    
     public int[] solution(String[] operations) {
-        int[] ans = {};
-        
-        PriorityQueue<Integer> pqMin = new PriorityQueue<>();
-        PriorityQueue<Integer> pqMax = new PriorityQueue<>(Collections.reverseOrder());
-        Map<Integer, Integer> map = new HashMap<>();
-        
-        for(String op : operations){
-            StringTokenizer st = new StringTokenizer(op);
-            String alpha = st.nextToken();
-            int num = Integer.parseInt(st.nextToken());
-            
-            if(alpha.equals("I")){
-                pqMin.add(num);
-                pqMax.add(num);
-                map.put(num, map.getOrDefault(num, 0)+1);
-                continue;
-            }
-            
-            if(num==1){
-                maxNum = 0;
-                while(true){
-                    if(pqMax.size()==0)
+        CustomHeap q = new CustomHeap();
+
+        for(int i=0; i<operations.length; i++){
+            StringTokenizer st = new StringTokenizer(operations[i]);
+            String command = st.nextToken();
+            int val = Integer.parseInt(st.nextToken());
+            if(command.equals("I")){
+                q.push(val);
+            }else{
+                switch (val){
+                    case 1 : 
+                        q.removeMax();
                         break;
-                    maxNum = pqMax.poll();
-                    Integer cnt = map.getOrDefault(maxNum,0);
-                    if(cnt == 0)  continue;
-                    if(cnt == 1) map.remove(maxNum);
-                    if(1 < cnt) map.put(maxNum, cnt-1);
-                    break;
-                }
-                
-            }else if(num==-1){
-                minNum = 0;
-                while(true){
-                    if(pqMin.size()==0)
+                    case -1: 
+                        q.removeMin();
                         break;
-                    minNum = pqMin.poll();
-                    Integer cnt = map.getOrDefault(minNum, 0);
-                    if(cnt == 0) continue;
-                    if(cnt == 1) map.remove(minNum);
-                    if(1 < cnt) map.put(minNum, cnt-1);
-                    break;
                 }
             }
         }
-        
-        if(map.size()==0){
-            ans = new int[]{0,0};
-        }else{
-            maxNum = 0;
-            while(true){
-                if(pqMax.size()==0)
-                    break;
-                maxNum = pqMax.poll();
-                Integer cnt = map.getOrDefault(maxNum, 0);
-                if(cnt == 0)  continue;
-                if(cnt == 1) map.remove(maxNum);
-                if(1 < cnt) map.put(maxNum, cnt-1);
-                break;
-            }
-            
-            minNum = 0;
-            while(true){
-                if(pqMin.size()==0)
-                        break;
-                minNum = pqMin.poll();
-                Integer cnt = map.getOrDefault(minNum,0);
-                if(cnt == 0) continue;
-                if(cnt == 1) map.remove(minNum);
-                if(1 < cnt) map.put(minNum, cnt-1);
-                break;
-            }
-            ans = new int[]{maxNum, minNum};
-        }
-        
-        return ans;
+        return new int[]{q.getMaxValue(),q.getMinValue()};
     }
+}
+
+class CustomHeap {
+    private PriorityQueue<Integer> leftHeap;
+    private PriorityQueue<Integer> rightHeap;
+
+    public CustomHeap(){
+        leftHeap = new PriorityQueue<>(10,Collections.reverseOrder());
+        rightHeap = new PriorityQueue<>();
+    }
+
+
+    public void push(int v){
+        leftHeap.add(v);
+    }
+
+    public void removeMax(){
+
+        while(!rightHeap.isEmpty()){
+            leftHeap.add(rightHeap.poll());
+        }
+
+        leftHeap.poll();
+    }
+
+    public void removeMin(){
+
+        while(!leftHeap.isEmpty()){
+            rightHeap.add(leftHeap.poll());
+        }
+
+        rightHeap.poll();
+    }
+
+    public int getMaxValue(){
+
+        if(leftHeap.size() == 0 && rightHeap.size() == 0)
+            return 0;
+
+        while(!rightHeap.isEmpty()){
+            leftHeap.add(rightHeap.poll());
+        }
+
+        return leftHeap.peek();
+    }
+
+    public int getMinValue(){
+
+        if(leftHeap.size() == 0 && rightHeap.size() == 0)
+            return 0;
+
+        while(!leftHeap.isEmpty()){
+            rightHeap.add(leftHeap.poll());
+        }
+
+        return rightHeap.peek();
+    }
+
 }
