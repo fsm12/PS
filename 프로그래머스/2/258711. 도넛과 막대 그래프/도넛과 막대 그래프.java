@@ -1,7 +1,3 @@
-/*
-
-*/
-
 import java.util.*;
 import java.io.*;
 
@@ -38,6 +34,7 @@ class Solution {
         for(int idx : adjList[ans[0]]){
             bfs(idx);
         }
+        
         return ans;
     }
     
@@ -54,28 +51,21 @@ class Solution {
         int ansVal = 0;
         
         exit : while(!q.isEmpty()){
-            int cIdx = q.poll();
+            int cur = q.poll();
             
             boolean flag = false;
-            for(int next : adjList[cIdx]){
-                // 방문 안한 곳 갈 수 있음
+            for(int next : adjList[cur]){
                 if(!vis[next]){
                     q.add(next);
                     vis[next] = true; 
                     ansVal = Math.max(ansVal, 1);
                 }
                 
-                // 방문했더라도 이어진 간선에서 아직 방문안한 곳이 있다면 갈 수 있음
-                // +) 방문했더라도 이어진 간선이 2개이상 있다면 8자임
                 if(vis[next]){
                     if(adjList[next].size()==2){
-                    //for(int nnext : adjList[next]){
-                        //if(!vis[nnext]){
-                            //q.add(nnext);
-                            ansVal = Math.max(ansVal, 2);
-                            ans[3]+=1;
-                            return;
-                        //}
+                        ansVal = Math.max(ansVal, 2);
+                        ans[3]+=1;
+                        return;
                     }else if(adjList[next].size()==0){
                         ans[2]+=1;
                         return;
@@ -83,28 +73,7 @@ class Solution {
                 }
             }
         }
-        
-        switch(ansVal){
-            case 1:
-                if(vis[idx]){
-                    ans[1]+=1;
-                }else{
-                   ans[2]+=1; 
-                }
-                break;
-            case 2:
-                
-                break;
-        }
+        ans[1]+=1;
+        return;
     }
 }
-
-// class Node{
-//     int idx;
-//     int nodeVis;
-    
-//     public Node(int idx, int nodeVis){
-//         this.idx = idx;
-//         this.vis = nodeVis;
-//     }
-// }
