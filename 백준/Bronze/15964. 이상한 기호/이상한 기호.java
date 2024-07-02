@@ -7,9 +7,9 @@ public class Main{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         
         StringTokenizer st = new StringTokenizer(br.readLine());
-        int a = Integer.parseInt(st.nextToken());
-        int b = Integer.parseInt(st.nextToken());
+        long a = Long.parseLong(st.nextToken());
+        long b = Long.parseLong(st.nextToken());
         
-        System.out.println((int)Math.pow(a,2) - (int)Math.pow(b,2));
+        System.out.println((long)Math.pow(a,2) - (long)Math.pow(b,2));
     }
 }
