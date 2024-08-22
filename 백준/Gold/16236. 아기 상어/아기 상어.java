@@ -2,71 +2,97 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int N, sharkSize = 2, numberOfEating = 0, move = 0;
-    static int[] cur, dx={-1,0,1,0}, dy={0,-1,0,1};
-    static int[][] map;
+    static int N, sharkSize = 2, numberOfEatingFish = 0, time = 0;
+    static Shark cur;
+    static int[] dx={-1,0,1,0}, dy={0,-1,0,1};
+    static int[][] board;
     static boolean[][] vis;
-    static boolean ck;
+    static boolean isEatFish;
 
-    public static void main(String[] args) throws IOException {
-        //System.setIn(new FileInputStream(input.txt"));
+    public static void main(String[] args) throws Exception {
+        // System.setIn(new FileInputStream("input.txt"));
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        
         N = Integer.parseInt(br.readLine());
 
-        map = new int[N][N];
-        for (int i = 0; i < N; i++) {
+        board = new int[N][N];
+        for (int i=0; i<N; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < N; j++) {
-                map[i][j] = Integer.parseInt(st.nextToken());
-                if (map[i][j] == 9) {
-                    cur = new int[]{i, j};
-                    map[i][j] = 0;
+            for (int j=0; j<N; j++) {
+                board[i][j] = Integer.parseInt(st.nextToken());
+                if (board[i][j] == 9) {
+                	cur = new Shark(i,j,0);
+                    board[i][j] = 0;
                 }
             }
         }
 
         while (true) {
-            PriorityQueue<int[]> que = new PriorityQueue<>((o1, o2) ->
-                    o1[2] != o2[2] ? Integer.compare(o1[2], o2[2]) : (o1[0] != o2[0] ? Integer.compare(o1[0], o2[0]) : Integer.compare(o1[1], o2[1]))
-            );
+        	PriorityQueue<Shark> pq = new PriorityQueue<>();
             vis = new boolean[N][N];
+            
+            pq.add(new Shark(cur.x, cur.y, 0));
+            vis[cur.x][cur.y] = true;
 
-            que.add(new int[]{cur[0], cur[1], 0});
-            vis[cur[0]][cur[1]] = true;
+            isEatFish = false;
 
-            ck = false;
-
-            while (!que.isEmpty()) {
-                cur = que.poll();
-
-                if (map[cur[0]][cur[1]] != 0 && map[cur[0]][cur[1]] < sharkSize) { 
-                    map[cur[0]][cur[1]] = 0; 
-                    numberOfEating++;
-                    move += cur[2]; 
-                    ck = true;
+            while (!pq.isEmpty()) {
+            	cur = pq.poll();
+                if (0 < board[cur.x][cur.y] && board[cur.x][cur.y] < sharkSize) { 
+                    board[cur.x][cur.y] = 0; 
+                    numberOfEatingFish++;
+                    time += cur.time; 
+                    isEatFish = true;
                     break;
                 }
 
-                for (int k = 0; k < 4; k++) {
-                    int ny = cur[0] + dy[k];
-                    int nx = cur[1] + dx[k];
+                for (int i=0; i<4; i++) {
+                    int nx = cur.x + dx[i];
+                    int ny = cur.y + dy[i];
 
-                    if (ny < 0 || nx < 0 || nx >= N || ny >= N || vis[ny][nx] || map[ny][nx] > sharkSize)
+                    if (nx < 0 || ny < 0 || N <= nx || N <= ny)
                         continue;
-
-                    que.add(new int[]{ny, nx, cur[2] + 1});
-                    vis[ny][nx] = true;
+                        
+                    if(vis[nx][ny])
+                    	continue;
+                    
+                    if(sharkSize < board[nx][ny] )
+                    	continue;
+                    
+                    pq.add(new Shark(nx, ny, cur.time + 1));
+                    vis[nx][ny] = true;
                 }
             }
 
-            if (!ck)
+            if (!isEatFish)
                 break;
 
-            if (sharkSize == numberOfEating) {
+            if (sharkSize == numberOfEatingFish) {
                 sharkSize++;
-                numberOfEating = 0;
+                numberOfEatingFish = 0;
             }
         }
-        System.out.println(move);
+        System.out.println(time);
     }
+}
+
+class Shark implements Comparable<Shark>{
+	int x, y, time;
+	
+	public Shark(int x, int y, int time) {
+		this.x = x;
+		this.y = y;
+		this.time = time;
+	}
+
+	@Override
+	public int compareTo(Shark o) {
+		if (this.time != o.time) {
+            return Integer.compare(this.time, o.time);
+        } else if (this.x != o.x) {
+            return Integer.compare(this.x, o.x);
+        } else {
+            return Integer.compare(this.y, o.y);
+        }
+	}
 }
